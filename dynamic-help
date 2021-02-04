@@ -1,0 +1,47 @@
+const loadCommands = require('./load-commands')
+const { prefix } = require('../config.json')
+const Discord = require("discord.js");
+
+module.exports = {
+  commands: ["dynamichelp", "dynamiccommands"],
+  minArgs: 0,
+  maxArgs: 0,
+  description: "List of all of Winston's commands",
+  callback: (message, args, text) => {
+    const botreply = new Discord.MessageEmbed()
+      .setColor("#0484A3")
+      .setTitle("Help Menu")
+      //.setDescription(`hello\n\n`)
+      .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`)
+      .setTimestamp();
+    /*
+    var i = 1;
+    var arr = Array [3];
+    */
+    const commands = loadCommands();
+    for (const command of commands) {
+      const mainCommand =
+        typeof command.commands === "string"
+          ? command.commands
+          : command.commands[0];
+      const args = command.expectedArgs ? ` ${command.expectedArgs}` : "";
+      const { description } = command;
+      /*
+      i++;
+      var cards = [
+      {arr: i, name: `${prefix}${mainCommand}${args}`},
+      {arr: i, name: `${prefix}${mainCommand}${args}`},
+      {arr: i, name: `${prefix}${mainCommand}${args}`}
+      ];
+      */
+      //arr[i] = `${prefix}${mainCommand}${args}`
+      botreply.addField(`${prefix}${mainCommand}${args}`, `${description}`, true);
+
+      // message.channel.send(reply)
+    };
+    
+    //botreply.addField("Info", arr(1)+arr(2)+arr(3), true)
+
+    message.reply(botreply);
+  }
+};
